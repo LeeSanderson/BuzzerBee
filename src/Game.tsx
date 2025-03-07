@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import beeImage from "./assets/bee.svg";
+import backgroundImage from "./assets/background.png";
+import foregroundImage from "./assets/forground.png";
 import { checkCollision, collidesWithRect } from "./collision";
 import { Bee, Obstacle, Rect } from "./types";
 
@@ -18,11 +20,15 @@ const Game: React.FC = () => {
   const scoreRef = useRef(score);
   const [highScore, setHighScore] = useState(() => Number(localStorage.getItem("highScore")) || 0);
   const [obstacles] = useState<Obstacle[]>([]);
+  const obstaclesRef = useRef(obstacles);
   const [isPaused, setIsPaused] = useState(false);
   const [beeState, setBeeState] = useState<Bee>(initialBeeState);
   const beeStateRef = useRef<Bee>(beeState);
+  const [backgroundX] = useState(0);
+  const backgroundXRef = useRef(backgroundX);
+  const [foregroundX] = useState(0);
+  const foregroundXRef = useRef(foregroundX);
 
-  const obstaclesRef = useRef(obstacles);
   const animationFrameIdRef = useRef<number | null>(null);
   const gravity = 0.04;
   const flapStrength = -2.5;
@@ -32,6 +38,11 @@ const Game: React.FC = () => {
   const speedIncreaseRate = 0.002;
   const beeImg = new Image();
   beeImg.src = beeImage;
+
+  const backgroundImg = new Image();
+  backgroundImg.src = backgroundImage;
+  const foregroundImg = new Image();
+  foregroundImg.src = foregroundImage;
 
   let gapSize = initialGapSize;
   let speed = initialSpeed;
@@ -100,6 +111,40 @@ const Game: React.FC = () => {
     context.fillRect(rect.x, rect.y, rect.width, rect.height);
   };
 
+  const updateBackground = (canvas: HTMLCanvasElement) => {
+    backgroundXRef.current -= speed / 2;
+    if (backgroundXRef.current <= -canvas.width) {
+      backgroundXRef.current = 0;
+    }
+
+    foregroundXRef.current -= speed / 1.5;
+    if (foregroundXRef.current <= -canvas.width) {
+      foregroundXRef.current = 0;
+    }
+  };
+
+  const drawBackground = (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+    const x = backgroundXRef.current;
+    context.drawImage(backgroundImg, x, 0, canvas.width, canvas.height);
+    context.drawImage(backgroundImg, x + canvas.width, 0, canvas.width, canvas.height);
+
+    const foregroundX = foregroundXRef.current;
+    context.drawImage(
+      foregroundImg,
+      foregroundX,
+      canvas.height - foregroundImg.height,
+      canvas.width,
+      foregroundImg.height,
+    );
+    context.drawImage(
+      foregroundImg,
+      foregroundX + canvas.width,
+      canvas.height - foregroundImg.height,
+      canvas.width,
+      foregroundImg.height,
+    );
+  };
+
   const render = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -108,6 +153,7 @@ const Game: React.FC = () => {
 
     const doUpdate = !isGameOver && !isPaused;
     if (doUpdate) {
+      updateBackground(canvas);
       updateBeePosition();
       updateObstacles(canvas);
 
@@ -128,6 +174,7 @@ const Game: React.FC = () => {
     }
 
     context.clearRect(0, 0, canvas.width, canvas.height);
+    drawBackground(context, canvas);
     drawBee(context);
     drawObstacles(obstaclesRef.current, context, beeStateRef.current);
 
