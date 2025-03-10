@@ -3,15 +3,8 @@ import beeImage from "./assets/bee.svg";
 import backgroundImage from "./assets/background.png";
 import foregroundImage from "./assets/forground.png";
 import { checkCollision, collidesWithRect } from "./collision";
-import { Bee, Obstacle, Rect } from "./types";
-
-const initialBeeState: Bee = {
-  x: 100,
-  y: 300,
-  width: 20,
-  height: 20,
-  velocity: 0,
-};
+import { Obstacle, Rect } from "./types";
+import Bee from "./components/Bee";
 
 const Game: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -22,15 +15,13 @@ const Game: React.FC = () => {
   const [obstacles] = useState<Obstacle[]>([]);
   const obstaclesRef = useRef(obstacles);
   const [isPaused, setIsPaused] = useState(false);
-  const [beeState, setBeeState] = useState<Bee>(initialBeeState);
-  const beeStateRef = useRef<Bee>(beeState);
+  const beeStateRef = useRef<Bee>(new Bee());
   const [backgroundX] = useState(0);
   const backgroundXRef = useRef(backgroundX);
   const [foregroundX] = useState(0);
   const foregroundXRef = useRef(foregroundX);
 
   const animationFrameIdRef = useRef<number | null>(null);
-  const gravity = 0.04;
   const flapStrength = -2.5;
   const initialGapSize = 200;
   const gapReductionRate = 0.9999;
@@ -49,24 +40,6 @@ const Game: React.FC = () => {
 
   const togglePause = () => {
     setIsPaused((prev) => !prev);
-  };
-
-  const updateBeePosition = () => {
-    beeStateRef.current = {
-      ...beeStateRef.current,
-      y: beeStateRef.current.y + beeStateRef.current.velocity,
-      velocity: beeStateRef.current.velocity + gravity,
-    };
-  };
-
-  const drawBee = (context: CanvasRenderingContext2D) => {
-    context.drawImage(
-      beeImg,
-      beeStateRef.current.x,
-      beeStateRef.current.y,
-      beeStateRef.current.width,
-      beeStateRef.current.height,
-    );
   };
 
   const updateObstacles = (canvas: HTMLCanvasElement) => {
@@ -154,7 +127,7 @@ const Game: React.FC = () => {
     const doUpdate = !isGameOver && !isPaused;
     if (doUpdate) {
       updateBackground(canvas);
-      updateBeePosition();
+      beeStateRef.current.update();
       updateObstacles(canvas);
 
       // Check for collisions
@@ -175,7 +148,7 @@ const Game: React.FC = () => {
 
     context.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground(context, canvas);
-    drawBee(context);
+    beeStateRef.current.draw(context);
     drawObstacles(obstaclesRef.current, context, beeStateRef.current);
 
     animationFrameIdRef.current = requestAnimationFrame(render);
@@ -193,8 +166,7 @@ const Game: React.FC = () => {
 
   const handleFlap = () => {
     if (!isGameOver && !isPaused) {
-      beeStateRef.current = { ...beeStateRef.current, velocity: flapStrength };
-      setBeeState(beeStateRef.current);
+      beeStateRef.current.velocity = flapStrength;
     }
   };
 
