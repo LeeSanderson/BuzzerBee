@@ -1,12 +1,13 @@
 import React, { useRef, useEffect, useState } from "react";
-import beeImage from "./assets/bee.svg";
-import backgroundImage from "./assets/background.png";
-import foregroundImage from "./assets/forground.png";
 import { checkCollision, collidesWithRect } from "./collision";
 import { Obstacle, Rect } from "./types";
 import Bee from "./components/Bee";
+import ParalaxBackgound from "./components/ParalaxBackground";
 
 const Game: React.FC = () => {
+  const initialSpeed = 3;
+  const speedIncreaseRate = 0.002;
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [score] = useState(0);
@@ -15,25 +16,12 @@ const Game: React.FC = () => {
   const [obstacles] = useState<Obstacle[]>([]);
   const obstaclesRef = useRef(obstacles);
   const [isPaused, setIsPaused] = useState(false);
-  const beeStateRef = useRef<Bee>(new Bee());
-  const [backgroundX] = useState(0);
-  const backgroundXRef = useRef(backgroundX);
-  const [foregroundX] = useState(0);
-  const foregroundXRef = useRef(foregroundX);
+  const backgroundRef = useRef<ParalaxBackgound>(new ParalaxBackgound(initialSpeed, speedIncreaseRate));
+  const beeRef = useRef<Bee>(new Bee());
 
   const animationFrameIdRef = useRef<number | null>(null);
-  const flapStrength = -2.5;
   const initialGapSize = 200;
   const gapReductionRate = 0.9999;
-  const initialSpeed = 3;
-  const speedIncreaseRate = 0.002;
-  const beeImg = new Image();
-  beeImg.src = beeImage;
-
-  const backgroundImg = new Image();
-  backgroundImg.src = backgroundImage;
-  const foregroundImg = new Image();
-  foregroundImg.src = foregroundImage;
 
   let gapSize = initialGapSize;
   let speed = initialSpeed;
@@ -84,40 +72,6 @@ const Game: React.FC = () => {
     context.fillRect(rect.x, rect.y, rect.width, rect.height);
   };
 
-  const updateBackground = (canvas: HTMLCanvasElement) => {
-    backgroundXRef.current -= speed / 2;
-    if (backgroundXRef.current <= -canvas.width) {
-      backgroundXRef.current = 0;
-    }
-
-    foregroundXRef.current -= speed / 1.5;
-    if (foregroundXRef.current <= -canvas.width) {
-      foregroundXRef.current = 0;
-    }
-  };
-
-  const drawBackground = (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
-    const x = backgroundXRef.current;
-    context.drawImage(backgroundImg, x, 0, canvas.width, canvas.height);
-    context.drawImage(backgroundImg, x + canvas.width, 0, canvas.width, canvas.height);
-
-    const foregroundX = foregroundXRef.current;
-    context.drawImage(
-      foregroundImg,
-      foregroundX,
-      canvas.height - foregroundImg.height,
-      canvas.width,
-      foregroundImg.height,
-    );
-    context.drawImage(
-      foregroundImg,
-      foregroundX + canvas.width,
-      canvas.height - foregroundImg.height,
-      canvas.width,
-      foregroundImg.height,
-    );
-  };
-
   const render = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -126,14 +80,15 @@ const Game: React.FC = () => {
 
     const doUpdate = !isGameOver && !isPaused;
     if (doUpdate) {
-      updateBackground(canvas);
-      beeStateRef.current.update();
+      // updateBackground(canvas);
+      backgroundRef.current.update(canvas);
+      beeRef.current.update(canvas);
       updateObstacles(canvas);
 
       // Check for collisions
-      if (checkCollision(beeStateRef.current, obstaclesRef.current, canvas.height)) {
+      if (checkCollision(beeRef.current, obstaclesRef.current, canvas.height)) {
         setIsGameOver(true);
-        console.log("Game Over", beeStateRef.current, ...obstaclesRef.current);
+        console.log("Game Over", beeRef.current, ...obstaclesRef.current);
         if (scoreRef.current > highScore) {
           localStorage.setItem("highScore", scoreRef.current.toString());
           setHighScore(scoreRef.current);
@@ -147,9 +102,10 @@ const Game: React.FC = () => {
     }
 
     context.clearRect(0, 0, canvas.width, canvas.height);
-    drawBackground(context, canvas);
-    beeStateRef.current.draw(context);
-    drawObstacles(obstaclesRef.current, context, beeStateRef.current);
+    //drawBackground(context, canvas);
+    backgroundRef.current.draw(context);
+    beeRef.current.draw(context);
+    drawObstacles(obstaclesRef.current, context, beeRef.current);
 
     animationFrameIdRef.current = requestAnimationFrame(render);
   };
@@ -166,7 +122,7 @@ const Game: React.FC = () => {
 
   const handleFlap = () => {
     if (!isGameOver && !isPaused) {
-      beeStateRef.current.velocity = flapStrength;
+      beeRef.current.flap();
     }
   };
 

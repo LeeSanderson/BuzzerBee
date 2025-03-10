@@ -4,7 +4,8 @@ import { GameObject } from "../types";
 const beeImg = new Image();
 beeImg.src = beeImage;
 
-const gravity = 0.04;
+const gravity = 0.08;
+const flapStrength = -3.5;
 
 export default class Bee implements GameObject {
   x: number;
@@ -25,8 +26,12 @@ export default class Bee implements GameObject {
     context.drawImage(beeImg, this.x, this.y, this.width, this.height);
   }
 
-  update() {
+  update(_canvas: HTMLCanvasElement) {
     this.y = this.y + this.velocity;
     this.velocity = this.velocity + gravity;
+  }
+
+  flap() {
+    this.velocity = flapStrength;
   }
 }

@@ -15,7 +15,6 @@ export type Obstacle = {
 };
 
 export interface GameObject {
-  // eslint-disable-next-line no-unused-vars
   draw(context: CanvasRenderingContext2D): void;
-  update(): void;
+  update(canvas: HTMLCanvasElement): void;
 }
