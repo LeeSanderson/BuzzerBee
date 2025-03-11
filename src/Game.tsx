@@ -76,14 +76,26 @@ const Game: React.FC = () => {
   };
 
   useEffect(() => {
-    const handleSpacebar = (e: KeyboardEvent) => {
+    const handleKeydown = (e: KeyboardEvent) => {
       if (e.code === "Space") {
         handleFlap();
+        e.preventDefault();
       }
     };
-    window.addEventListener("keydown", handleSpacebar);
+    window.addEventListener("keydown", handleKeydown);
     return () => {
-      window.removeEventListener("keydown", handleSpacebar);
+      window.removeEventListener("keydown", handleKeydown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const handleTouch = () => {
+      handleFlap();
+    };
+    window.addEventListener("touchstart", handleTouch);
+    return () => {
+      window.removeEventListener("touchstart", handleTouch);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
