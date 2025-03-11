@@ -1,4 +1,5 @@
-import { Bee, Obstacle, Rect } from "./types";
+import Bee from "./components/Bee";
+import { Obstacle, Rect } from "./types";
 
 export const checkCollision = (bee: Bee, obstacles: Obstacle[], canvasHeight: number): boolean => {
   for (const obs of obstacles) {
@@ -11,6 +12,8 @@ export const checkCollision = (bee: Bee, obstacles: Obstacle[], canvasHeight: nu
       collidesWithFloor ||
       (withinObstacleX && (collidesWithRect(bee, obs.top) || collidesWithRect(bee, obs.bottom)))
     ) {
+      obs.collideWithTop = collidesWithRect(bee, obs.top);
+      obs.collideWithBottom = collidesWithRect(bee, obs.bottom);
       return true;
     }
   }

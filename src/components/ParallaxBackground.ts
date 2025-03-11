@@ -10,7 +10,7 @@ midgroundImg.src = midgroundImage;
 const foregroundImg = new Image();
 foregroundImg.src = foregroundImage;
 
-export default class ParalaxBackgound implements GameObject {
+export default class ParallaxBackgound implements GameObject {
   midgroundX: number = 0;
   foregroundX: number = 0;
   speed: number;

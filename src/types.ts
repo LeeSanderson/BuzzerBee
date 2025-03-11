@@ -5,13 +5,11 @@ export type Rect = {
   height: number;
 };
 
-export type Bee = Rect & {
-  velocity: number;
-};
-
 export type Obstacle = {
   top: Rect;
+  collideWithTop: boolean;
   bottom: Rect;
+  collideWithBottom: boolean;
 };
 
 export interface GameObject {
