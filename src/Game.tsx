@@ -33,8 +33,13 @@ const Game: React.FC = () => {
         console.log("Game Over", beeRef.current, ...obstacleFactoryRef.current.obstacles);
       }
 
-      // Update score
-      gameStateRef.current.setScore(gameStateRef.current.score + 1);
+      // Update score only when bee passes an obstacle
+      obstacleFactoryRef.current.obstacles.forEach((obstacle) => {
+        if (!obstacle.passed && beeRef.current.x > obstacle.top.x + obstacle.top.width) {
+          obstacle.passed = true;
+          gameStateRef.current.setScore(gameStateRef.current.score + 1);
+        }
+      });
     }
 
     context.clearRect(0, 0, canvas.width, canvas.height);

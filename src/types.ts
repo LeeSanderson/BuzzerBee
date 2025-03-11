@@ -10,6 +10,7 @@ export type Obstacle = {
   collideWithTop: boolean;
   bottom: Rect;
   collideWithBottom: boolean;
+  passed: boolean;
 };
 
 export interface GameObject {

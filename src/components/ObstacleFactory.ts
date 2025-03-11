@@ -34,9 +34,10 @@ export default class ObstacleFactory implements GameObject {
       collideWithTop: obs.collideWithTop,
       bottom: { ...obs.bottom, x: obs.bottom.x - this.speed },
       collideWithBottom: obs.collideWithBottom,
+      passed: obs.passed,
     }));
 
-    // Add a mew obstacle if the last one is far enough to the left
+    // Add a new obstacle if the last one is far enough to the left
     if (this.obstacles.length === 0 || this.obstacles[this.obstacles.length - 1].top.x < 400) {
       const gapY = Math.random() * (canvas.height - this.gapSize) + this.gapSize / 2;
       this.obstacles.push({
@@ -54,10 +55,11 @@ export default class ObstacleFactory implements GameObject {
           height: canvas.height - gapY - this.gapSize / 2,
         },
         collideWithBottom: false,
+        passed: false,
       });
     }
 
-    // Remove obstables that are off screen
+    // Remove obstacles that are off screen
     this.obstacles = this.obstacles.filter((obs) => obs.top.x > -50);
 
     // Increase speed and decrease gap size
