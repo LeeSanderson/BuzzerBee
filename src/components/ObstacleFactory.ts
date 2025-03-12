@@ -24,13 +24,24 @@ export default class ObstacleFactory implements GameObject {
     this.obstacles.forEach((obs) => {
       // this.drawRect(obs.top, context, obs.collideWithTop ? "red" : "blue");
       // this.drawRect(obs.bottom, context, obs.collideWithBottom ? "red" : "blue");
-      this.drawImage(obs.top, context);
-      this.drawImage(obs.bottom, context);
+      this.drawImage(obs.top, context, obs.collideWithTop ? "red" : "brown");
+      this.drawImage(obs.bottom, context, obs.collideWithBottom ? "red" : "brown");
     });
   }
 
-  drawImage(rect: Rect, context: CanvasRenderingContext2D) {
-    context.drawImage(honeycombImg, rect.x, rect.y, rect.width, rect.height);
+  drawImage(rect: Rect, context: CanvasRenderingContext2D, borderColour: string) {
+    this.drawRect(rect, context, borderColour);
+    const honneycombPattern = context.createPattern(honeycombImg, "repeat");
+    if (honneycombPattern) {
+      context.fillStyle = honneycombPattern;
+      const borderWidth = 4;
+      context.fillRect(
+        rect.x + borderWidth,
+        rect.y + borderWidth,
+        rect.width - 2 * borderWidth,
+        rect.height - 2 * borderWidth,
+      );
+    }
   }
 
   drawRect(rect: Rect, context: CanvasRenderingContext2D, fillStyle: string | CanvasGradient | CanvasPattern) {
