@@ -4,6 +4,7 @@ import Bee from "./components/Bee";
 import ParallaxBackgound from "./components/ParallaxBackground";
 import ObstacleFactory from "./components/ObstacleFactory";
 import GameState from "./components/GameState";
+import Score from "./components/Score";
 
 const initialSpeed = 3;
 const speedIncreaseRate = 0.002;
@@ -15,6 +16,7 @@ const Game: React.FC = () => {
   const backgroundRef = useRef<ParallaxBackgound>(new ParallaxBackgound(initialSpeed, speedIncreaseRate));
   const obstacleFactoryRef = useRef<ObstacleFactory>(new ObstacleFactory(initialSpeed, speedIncreaseRate));
   const beeRef = useRef<Bee>(new Bee(gameStateRef.current));
+  const scoreRef = useRef<Score>(new Score(gameStateRef.current));
   const animationFrameIdRef = useRef<number | null>(null);
 
   const render = () => {
@@ -27,27 +29,29 @@ const Game: React.FC = () => {
       backgroundRef.current.update(canvas);
       obstacleFactoryRef.current.update(canvas);
       beeRef.current.update(canvas);
-
-      // Check for collisions
-      if (checkCollision(beeRef.current, obstacleFactoryRef.current.obstacles, canvas.height)) {
-        gameStateRef.current.setGameOver(true);
-        setGameOver(true); // Set local state to trigger React component re-render
-        console.log("Game Over", beeRef.current, ...obstacleFactoryRef.current.obstacles);
-      }
-
-      // Update score only when bee passes an obstacle
-      obstacleFactoryRef.current.obstacles.forEach((obstacle) => {
-        if (!obstacle.passed && beeRef.current.x > obstacle.top.x + obstacle.top.width) {
-          obstacle.passed = true;
-          gameStateRef.current.setScore(gameStateRef.current.score + 1);
-        }
-      });
+      scoreRef.current.update(canvas);
     }
+
+    // Check for collisions
+    if (checkCollision(beeRef.current, obstacleFactoryRef.current.obstacles, canvas.height)) {
+      gameStateRef.current.setGameOver(true);
+      setGameOver(true); // Set local state to trigger React component re-render
+      console.log("Game Over", beeRef.current, ...obstacleFactoryRef.current.obstacles);
+    }
+
+    // Update score only when bee passes an obstacle
+    obstacleFactoryRef.current.obstacles.forEach((obstacle) => {
+      if (!obstacle.passed && beeRef.current.x > obstacle.top.x + obstacle.top.width) {
+        obstacle.passed = true;
+        gameStateRef.current.setScore(gameStateRef.current.score + 1);
+      }
+    });
 
     context.clearRect(0, 0, canvas.width, canvas.height);
     backgroundRef.current.draw(context);
     obstacleFactoryRef.current.draw(context);
     beeRef.current.draw(context);
+    scoreRef.current.draw(context);
 
     animationFrameIdRef.current = requestAnimationFrame(render);
   };
