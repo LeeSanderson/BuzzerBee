@@ -1,7 +1,11 @@
 import { GameObject, Obstacle, Rect } from "../types";
+import honeycomb from "../assets/Honeycomb.png";
 
 const initialGapSize = 200;
 const gapReductionRate = 0.9999;
+
+const honeycombImg = new Image();
+honeycombImg.src = honeycomb;
 
 export default class ObstacleFactory implements GameObject {
   obstacles: Obstacle[] = [];
@@ -18,9 +22,15 @@ export default class ObstacleFactory implements GameObject {
 
   draw(context: CanvasRenderingContext2D): void {
     this.obstacles.forEach((obs) => {
-      this.drawRect(obs.top, context, obs.collideWithTop ? "red" : "blue");
-      this.drawRect(obs.bottom, context, obs.collideWithBottom ? "red" : "blue");
+      // this.drawRect(obs.top, context, obs.collideWithTop ? "red" : "blue");
+      // this.drawRect(obs.bottom, context, obs.collideWithBottom ? "red" : "blue");
+      this.drawImage(obs.top, context);
+      this.drawImage(obs.bottom, context);
     });
+  }
+
+  drawImage(rect: Rect, context: CanvasRenderingContext2D) {
+    context.drawImage(honeycombImg, rect.x, rect.y, rect.width, rect.height);
   }
 
   drawRect(rect: Rect, context: CanvasRenderingContext2D, fillStyle: string | CanvasGradient | CanvasPattern) {

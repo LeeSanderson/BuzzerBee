@@ -10,6 +10,7 @@ const speedIncreaseRate = 0.002;
 
 const Game: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [gameOver, setGameOver] = React.useState(false);
   const gameStateRef = useRef<GameState>(new GameState());
   const backgroundRef = useRef<ParallaxBackgound>(new ParallaxBackgound(initialSpeed, speedIncreaseRate));
   const obstacleFactoryRef = useRef<ObstacleFactory>(new ObstacleFactory(initialSpeed, speedIncreaseRate));
@@ -30,6 +31,7 @@ const Game: React.FC = () => {
       // Check for collisions
       if (checkCollision(beeRef.current, obstacleFactoryRef.current.obstacles, canvas.height)) {
         gameStateRef.current.setGameOver(true);
+        setGameOver(true); // Set local state to trigger React component re-render
         console.log("Game Over", beeRef.current, ...obstacleFactoryRef.current.obstacles);
       }
 
@@ -58,12 +60,7 @@ const Game: React.FC = () => {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    gameStateRef.current.isGameOver,
-    gameStateRef.current.score,
-    gameStateRef.current.highScore,
-    gameStateRef.current.isPaused,
-  ]);
+  }, [gameOver]);
 
   const handleFlap = () => {
     if (!gameStateRef.current.isGameOver && !gameStateRef.current.isPaused) {
