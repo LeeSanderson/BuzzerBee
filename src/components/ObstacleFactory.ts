@@ -1,5 +1,6 @@
 import { GameObject, Obstacle, Rect } from "../types";
 import honeycomb from "../assets/Honeycomb.png";
+import GameState from "./GameState";
 
 const initialGapSize = 200;
 const gapReductionRate = 0.9999;
@@ -12,18 +13,13 @@ export default class ObstacleFactory implements GameObject {
   speed: number;
   gapSize: number;
 
-  constructor(
-    private initialSpeed: number,
-    private speedIncreaseRate: number,
-  ) {
-    this.speed = initialSpeed;
+  constructor(private readonly gameState: GameState) {
+    this.speed = gameState.initialSpeed;
     this.gapSize = initialGapSize;
   }
 
   draw(context: CanvasRenderingContext2D): void {
     this.obstacles.forEach((obs) => {
-      // this.drawRect(obs.top, context, obs.collideWithTop ? "red" : "blue");
-      // this.drawRect(obs.bottom, context, obs.collideWithBottom ? "red" : "blue");
       this.drawImage(obs.top, context, obs.collideWithTop ? "red" : "brown");
       this.drawImage(obs.bottom, context, obs.collideWithBottom ? "red" : "brown");
     });
@@ -49,7 +45,7 @@ export default class ObstacleFactory implements GameObject {
     context.fillRect(rect.x, rect.y, rect.width, rect.height);
   }
 
-  update(canvas: HTMLCanvasElement): void {
+  update(canvas: HTMLCanvasElement) {
     this.obstacles = this.obstacles.map((obs) => ({
       top: { ...obs.top, x: obs.top.x - this.speed },
       collideWithTop: obs.collideWithTop,
@@ -83,8 +79,10 @@ export default class ObstacleFactory implements GameObject {
     // Remove obstacles that are off screen
     this.obstacles = this.obstacles.filter((obs) => obs.top.x > -50);
 
-    // Increase speed and decrease gap size
-    this.gapSize *= gapReductionRate;
-    this.speed += this.speedIncreaseRate;
+    if (!this.gameState.isPreStart) {
+      // Increase speed and decrease gap size
+      this.gapSize *= gapReductionRate;
+      this.speed += this.gameState.speedIncreaseRate;
+    }
   }
 }

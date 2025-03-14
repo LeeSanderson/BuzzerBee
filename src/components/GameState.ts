@@ -3,12 +3,14 @@ export default class GameState {
   private _score: number;
   private _highScore: number;
   private _isPaused: boolean;
+  private _isPreStart: boolean;
 
   constructor() {
     this._isGameOver = false;
     this._score = 0;
     this._highScore = Number(localStorage.getItem("highScore")) || 0;
     this._isPaused = false;
+    this._isPreStart = true;
   }
 
   get isGameOver(): boolean {
@@ -27,8 +29,20 @@ export default class GameState {
     return this._isPaused;
   }
 
+  get isPreStart(): boolean {
+    return this._isPreStart;
+  }
+
   get isAlive(): boolean {
-    return !this._isGameOver && !this._isPaused;
+    return !this._isGameOver && !this._isPaused && !this._isPreStart;
+  }
+
+  get initialSpeed(): number {
+    return 3;
+  }
+
+  get speedIncreaseRate(): number {
+    return 0.002;
   }
 
   setGameOver(isGameOver: boolean): void {
@@ -47,5 +61,9 @@ export default class GameState {
 
   togglePaused(): void {
     this._isPaused = !this._isPaused;
+  }
+
+  startGame(): void {
+    this._isPreStart = false;
   }
 }

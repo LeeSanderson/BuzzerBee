@@ -2,6 +2,7 @@ import { GameObject } from "../types";
 import backgroundImage from "../assets/background.png";
 import midgroundImage from "../assets/midground.png";
 import foregroundImage from "../assets/forground.png";
+import GameState from "./GameState";
 
 const backgroundImg = new Image();
 backgroundImg.src = backgroundImage;
@@ -15,11 +16,8 @@ export default class ParallaxBackgound implements GameObject {
   foregroundX: number = 0;
   speed: number;
 
-  constructor(
-    private initialSpeed: number,
-    private speedIncreaseRate: number,
-  ) {
-    this.speed = initialSpeed;
+  constructor(private readonly gameState: GameState) {
+    this.speed = gameState.initialSpeed;
   }
   draw(context: CanvasRenderingContext2D): void {
     context.drawImage(backgroundImg, 0, 0, context.canvas.width, context.canvas.height);
@@ -50,7 +48,9 @@ export default class ParallaxBackgound implements GameObject {
   }
 
   update(canvas: HTMLCanvasElement): void {
-    this.speed += this.speedIncreaseRate;
+    if (!this.gameState.isPreStart) {
+      this.speed += this.gameState.speedIncreaseRate;
+    }
 
     this.midgroundX -= this.speed / 4;
     if (this.midgroundX <= -canvas.width) {

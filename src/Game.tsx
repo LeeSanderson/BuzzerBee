@@ -6,31 +6,32 @@ import ObstacleFactory from "./components/ObstacleFactory";
 import GameState from "./components/GameState";
 import Score from "./components/Score";
 
-const initialSpeed = 3;
-const speedIncreaseRate = 0.002;
-
 const Game: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [gameOver, setGameOver] = React.useState(false);
   const gameStateRef = useRef<GameState>(new GameState());
-  const backgroundRef = useRef<ParallaxBackgound>(new ParallaxBackgound(initialSpeed, speedIncreaseRate));
-  const obstacleFactoryRef = useRef<ObstacleFactory>(new ObstacleFactory(initialSpeed, speedIncreaseRate));
+  const backgroundRef = useRef<ParallaxBackgound>(new ParallaxBackgound(gameStateRef.current));
+  const obstacleFactoryRef = useRef<ObstacleFactory>(new ObstacleFactory(gameStateRef.current));
   const beeRef = useRef<Bee>(new Bee(gameStateRef.current));
   const scoreRef = useRef<Score>(new Score(gameStateRef.current));
   const animationFrameIdRef = useRef<number | null>(null);
 
-  const render = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const context = canvas.getContext("2d");
-    if (!context) return;
-
-    if (gameStateRef.current.isAlive) {
-      backgroundRef.current.update(canvas);
-      obstacleFactoryRef.current.update(canvas);
-      beeRef.current.update(canvas);
-      scoreRef.current.update(canvas);
+  const renderPreStart = (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+    backgroundRef.current.update(canvas);
+    beeRef.current.update(canvas);
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    backgroundRef.current.draw(context);
+    beeRef.current.draw(context);
+    if (beeRef.current.y > canvas.height / 2) {
+      beeRef.current.flap();
     }
+  };
+
+  const renderActiveGame = (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+    backgroundRef.current.update(canvas);
+    obstacleFactoryRef.current.update(canvas);
+    beeRef.current.update(canvas);
+    scoreRef.current.update(canvas);
 
     // Check for collisions
     if (checkCollision(beeRef.current, obstacleFactoryRef.current.obstacles, canvas.height)) {
@@ -52,6 +53,19 @@ const Game: React.FC = () => {
     obstacleFactoryRef.current.draw(context);
     beeRef.current.draw(context);
     scoreRef.current.draw(context);
+  };
+
+  const render = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    if (gameStateRef.current.isPreStart) {
+      renderPreStart(context, canvas);
+    } else if (gameStateRef.current.isAlive) {
+      renderActiveGame(context, canvas);
+    }
 
     animationFrameIdRef.current = requestAnimationFrame(render);
   };
@@ -67,7 +81,9 @@ const Game: React.FC = () => {
   }, [gameOver]);
 
   const handleFlap = () => {
-    if (!gameStateRef.current.isGameOver && !gameStateRef.current.isPaused) {
+    if (gameStateRef.current.isPreStart) {
+      gameStateRef.current.startGame();
+    } else if (!gameStateRef.current.isGameOver && !gameStateRef.current.isPaused) {
       beeRef.current.flap();
     }
   };
