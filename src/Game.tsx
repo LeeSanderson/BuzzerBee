@@ -5,6 +5,7 @@ import ParallaxBackgound from "./components/ParallaxBackground";
 import ObstacleFactory from "./components/ObstacleFactory";
 import GameState from "./components/GameState";
 import Score from "./components/Score";
+import PreStartInstructions from "./components/PreStartInstructions";
 
 const Game: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -15,6 +16,7 @@ const Game: React.FC = () => {
   const beeRef = useRef<Bee>(new Bee(gameStateRef.current));
   const scoreRef = useRef<Score>(new Score(gameStateRef.current));
   const animationFrameIdRef = useRef<number | null>(null);
+  const instructionsRef = useRef<PreStartInstructions>(new PreStartInstructions());
 
   const renderPreStart = (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
     backgroundRef.current.update(canvas);
@@ -22,6 +24,7 @@ const Game: React.FC = () => {
     context.clearRect(0, 0, canvas.width, canvas.height);
     backgroundRef.current.draw(context);
     beeRef.current.draw(context);
+    instructionsRef.current.draw(context);
     if (beeRef.current.y > canvas.height / 2) {
       beeRef.current.flap();
     }
