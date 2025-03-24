@@ -6,9 +6,11 @@ import ObstacleFactory from "./components/ObstacleFactory";
 import GameState from "./components/GameState";
 import Score from "./components/Score";
 import PreStartInstructions from "./components/PreStartInstructions";
+import BackgroundMusic from "./components/BackgroundMusic";
 
 const Game: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const hasStartedAudioRef = useRef(false);
   const [gameOver, setGameOver] = React.useState(false);
   const gameStateRef = useRef<GameState>(new GameState());
   const backgroundRef = useRef<ParallaxBackgound>(new ParallaxBackgound(gameStateRef.current));
@@ -84,6 +86,10 @@ const Game: React.FC = () => {
   }, [gameOver]);
 
   const handleFlap = () => {
+    if (!hasStartedAudioRef.current) {
+      hasStartedAudioRef.current = true;
+    }
+
     if (gameStateRef.current.isPreStart) {
       gameStateRef.current.startGame();
     } else if (!gameStateRef.current.isGameOver && !gameStateRef.current.isPaused) {
@@ -119,6 +125,7 @@ const Game: React.FC = () => {
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div onClick={handleFlap}>
+      <BackgroundMusic />
       <canvas ref={canvasRef} width={800} height={600} />
       {gameStateRef.current.isGameOver && (
         <div>

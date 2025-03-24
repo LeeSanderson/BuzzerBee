@@ -6,15 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-		"lint": "eslint .",
-		"lint:fix": "eslint --fix .",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "preview": "vite preview",
     "start": "vite",
     "test": "jest"
   },
   "dependencies": {
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "use-sound": "^5.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
