@@ -1,5 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
-import useSound from "use-sound";
+import React, { createContext, useEffect, useRef, useState } from "react";
 
 export interface BackgroundMusicContextProps {
   isPlaying: boolean;
@@ -11,27 +10,41 @@ export const BackgroundMusicContext = createContext<BackgroundMusicContextProps 
 
 export const BackgroundMusicProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(true);
-  const [play, { stop }] = useSound("/audio/background-track.mp3", {
-    loop: true,
-    volume: 0.5,
-    onend: () => setIsPlaying(false),
-  });
+  const [volume] = useState(0.5);
+  const audioRef = useRef(new Audio("/audio/background-track.mp3"));
 
   useEffect(() => {
+    const audio = audioRef.current;
+    audio.loop = true;
+    audio.volume = volume;
+
     const startMusic = () => {
+      setIsPlaying(true);
+    };
+
+    const playMusic = () => {
       if (isPlaying) {
-        try {
-          play({ forceSoundEnabled: true });
-        } catch (error) {
-          console.error("Error playing sound:", error);
-        }
+        audio.play().catch((error) => {
+          setIsPlaying(false);
+
+          // Assume error due to audio being because of no user interaction
+          // Try to play again after user clicks or touches the screen
+          document.removeEventListener("touchstart", startMusic), { once: true };
+          document.addEventListener("click", startMusic, { once: true });
+          console.error("Error playing audio:", error);
+        });
       } else {
-        stop();
+        audio.pause();
       }
     };
 
-    startMusic();
-  }, [play, stop, isPlaying]);
+    playMusic();
+    return () => {
+      document.removeEventListener("touchstart", startMusic);
+      document.removeEventListener("click", startMusic);
+      audio.pause();
+    };
+  }, [isPlaying, setIsPlaying, volume]);
 
   return (
     <BackgroundMusicContext.Provider value={{ isPlaying, setIsPlaying }}>{children}</BackgroundMusicContext.Provider>
