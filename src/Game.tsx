@@ -6,7 +6,7 @@ import ObstacleFactory from "./components/ObstacleFactory";
 import GameState from "./components/GameState";
 import Score from "./components/Score";
 import PreStartInstructions from "./components/PreStartInstructions";
-import BackgroundMusic from "./components/BackgroundMusic";
+import { useBackgroundMusic } from "./hooks/useBackgroundMusic";
 
 const Game: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -19,6 +19,7 @@ const Game: React.FC = () => {
   const scoreRef = useRef<Score>(new Score(gameStateRef.current));
   const animationFrameIdRef = useRef<number | null>(null);
   const instructionsRef = useRef<PreStartInstructions>(new PreStartInstructions());
+  const { isPlaying, setIsPlaying } = useBackgroundMusic();
 
   const renderPreStart = (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
     backgroundRef.current.update(canvas);
@@ -125,7 +126,6 @@ const Game: React.FC = () => {
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div onClick={handleFlap}>
-      <BackgroundMusic />
       <canvas ref={canvasRef} width={800} height={600} />
       {gameStateRef.current.isGameOver && (
         <div>
@@ -139,6 +139,15 @@ const Game: React.FC = () => {
           </button>
         </div>
       )}
+      <div>
+        <button
+          onClick={() => {
+            setIsPlaying(!isPlaying);
+          }}
+        >
+          {isPlaying ? "Stop Music" : "Play Music"}
+        </button>
+      </div>
     </div>
   );
 };
