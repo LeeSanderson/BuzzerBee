@@ -1,6 +1,10 @@
 import { GameObject } from "../types";
 
 export default class PreStartInstructions implements GameObject {
+  reset(): void {
+    // No reset logic needed for static instructions
+  }
+
   draw(context: CanvasRenderingContext2D): void {
     context.font = "30px 'Press Start 2P', cursive";
     context.fillStyle = "brown";

@@ -17,8 +17,13 @@ export default class ParallaxBackgound implements GameObject {
   speed: number;
 
   constructor(private readonly gameState: GameState) {
-    this.speed = gameState.initialSpeed;
+    this.reset();
   }
+
+  reset(): void {
+    this.speed = this.gameState.initialSpeed;
+  }
+
   draw(context: CanvasRenderingContext2D): void {
     context.drawImage(backgroundImg, 0, 0, context.canvas.width, context.canvas.height);
 

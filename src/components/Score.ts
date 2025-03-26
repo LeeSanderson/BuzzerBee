@@ -7,6 +7,9 @@ export default class Score implements GameObject {
   constructor(gameState: GameState) {
     this._gameState = gameState;
   }
+  reset(): void {
+    // No reset logic needed for the score display
+  }
 
   draw(context: CanvasRenderingContext2D) {
     context.font = "20px 'Press Start 2P', cursive";

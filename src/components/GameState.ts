@@ -6,9 +6,13 @@ export default class GameState {
   private _isPreStart: boolean;
 
   constructor() {
+    this.reset();
+    this._highScore = Number(localStorage.getItem("highScore")) || 0;
+  }
+
+  reset(): void {
     this._isGameOver = false;
     this._score = 0;
-    this._highScore = Number(localStorage.getItem("highScore")) || 0;
     this._isPaused = false;
     this._isPreStart = true;
   }

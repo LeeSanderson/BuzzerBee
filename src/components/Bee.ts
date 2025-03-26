@@ -13,7 +13,6 @@ const gravity = 0.08;
 const flapStrength = -3.5;
 
 export default class Bee implements GameObject {
-  _gameState: GameState;
   x: number;
   y: number;
   width: number;
@@ -22,8 +21,11 @@ export default class Bee implements GameObject {
   beeFrames = [beeImg1, beeImg2];
   beeFrameIndex = 0;
 
-  constructor(gameState: GameState) {
-    this._gameState = gameState;
+  constructor(private readonly gameState: GameState) {
+    this.reset();
+  }
+
+  reset(): void {
     this.x = 100;
     this.y = 300;
     this.width = 40;
@@ -34,7 +36,7 @@ export default class Bee implements GameObject {
   draw(context: CanvasRenderingContext2D) {
     context.drawImage(this.beeFrames[this.beeFrameIndex], this.x, this.y, this.width, this.height);
 
-    if (this._gameState.isAlive) {
+    if (this.gameState.isAlive) {
       this.beeFrameIndex = (this.beeFrameIndex + 1) % this.beeFrames.length;
     }
   }

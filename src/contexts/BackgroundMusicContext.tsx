@@ -10,7 +10,7 @@ export const BackgroundMusicContext = createContext<BackgroundMusicContextProps 
 
 export const BackgroundMusicProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(true);
-  const [volume] = useState(0.5);
+  const [volume] = useState(0.3);
   const audioRef = useRef(new Audio("/audio/background-track.mp3"));
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export const BackgroundMusicProvider: React.FC<{ children: React.ReactNode }> = 
         audio.play().catch((error) => {
           setIsPlaying(false);
 
-          // Assume error due to audio being because of no user interaction
+          // Assume error due to audio being disabled because of no user interaction
           // Try to play again after user clicks or touches the screen
           document.removeEventListener("touchstart", startMusic), { once: true };
           document.addEventListener("click", startMusic, { once: true });
@@ -39,6 +39,7 @@ export const BackgroundMusicProvider: React.FC<{ children: React.ReactNode }> = 
     };
 
     playMusic();
+
     return () => {
       document.removeEventListener("touchstart", startMusic);
       document.removeEventListener("click", startMusic);

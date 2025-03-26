@@ -16,4 +16,5 @@ export type Obstacle = {
 export interface GameObject {
   draw(context: CanvasRenderingContext2D): void;
   update(canvas: HTMLCanvasElement): void;
+  reset(): void;
 }

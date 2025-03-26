@@ -14,8 +14,13 @@ export default class ObstacleFactory implements GameObject {
   gapSize: number;
 
   constructor(private readonly gameState: GameState) {
-    this.speed = gameState.initialSpeed;
+    this.reset();
+  }
+
+  reset(): void {
+    this.speed = this.gameState.initialSpeed;
     this.gapSize = initialGapSize;
+    this.obstacles = [];
   }
 
   draw(context: CanvasRenderingContext2D): void {

@@ -10,7 +10,6 @@ import { useBackgroundMusic } from "./hooks/useBackgroundMusic";
 
 const Game: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const hasStartedAudioRef = useRef(false);
   const [gameOver, setGameOver] = React.useState(false);
   const gameStateRef = useRef<GameState>(new GameState());
   const backgroundRef = useRef<ParallaxBackgound>(new ParallaxBackgound(gameStateRef.current));
@@ -87,15 +86,21 @@ const Game: React.FC = () => {
   }, [gameOver]);
 
   const handleFlap = () => {
-    if (!hasStartedAudioRef.current) {
-      hasStartedAudioRef.current = true;
-    }
-
     if (gameStateRef.current.isPreStart) {
       gameStateRef.current.startGame();
     } else if (!gameStateRef.current.isGameOver && !gameStateRef.current.isPaused) {
       beeRef.current.flap();
     }
+  };
+
+  const resetGame = () => {
+    setGameOver(false);
+    gameStateRef.current.reset();
+    backgroundRef.current.reset();
+    obstacleFactoryRef.current.reset();
+    beeRef.current.reset();
+    scoreRef.current.reset();
+    instructionsRef.current.reset();
   };
 
   useEffect(() => {
@@ -129,7 +134,7 @@ const Game: React.FC = () => {
       <canvas ref={canvasRef} width={800} height={600} />
       {gameStateRef.current.isGameOver && (
         <div>
-          <button onClick={() => window.location.reload()}>Retry</button>
+          <button onClick={resetGame}>Retry</button>
         </div>
       )}
       {!gameStateRef.current.isGameOver && (
