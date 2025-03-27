@@ -1,0 +1,33 @@
+.game-over-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1000;
+}
+
+.game-over-image {
+  width: 200px;
+  height: auto;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+.game-over-modal button {
+  background-color: #ffcc00;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.game-over-modal button:hover {
+  background-color: #ffaa00;
+}

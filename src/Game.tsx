@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { checkCollision } from "./collision";
 import Bee from "./components/Bee";
 import ParallaxBackgound from "./components/ParallaxBackground";
@@ -8,6 +8,7 @@ import Score from "./components/Score";
 import PreStartInstructions from "./components/PreStartInstructions";
 import { useBackgroundMusic } from "./hooks/useBackgroundMusic";
 import { useEvent } from "./hooks/useEvent";
+import GameOverModal from "./components/GameOverModal";
 
 const Game: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -20,6 +21,7 @@ const Game: React.FC = () => {
   const animationFrameIdRef = useRef<number | null>(null);
   const instructionsRef = useRef<PreStartInstructions>(new PreStartInstructions());
   const { isPlaying, setIsPlaying } = useBackgroundMusic();
+  const [highScore, setHighScore] = useState<number>(parseInt(localStorage.getItem("highScore") || "0", 10));
 
   const renderPreStart = (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
     backgroundRef.current.update(canvas);
@@ -87,14 +89,24 @@ const Game: React.FC = () => {
   }, [gameOver]);
 
   const resetGame = () => {
+    setGameOver(false);
     gameStateRef.current.reset();
     backgroundRef.current.reset();
     obstacleFactoryRef.current.reset();
     beeRef.current.reset();
     scoreRef.current.reset();
     instructionsRef.current.reset();
-    setGameOver(false);
   };
+
+  useEffect(() => {
+    if (gameOver) {
+      const currentScore = gameStateRef.current.score;
+      if (currentScore > highScore) {
+        setHighScore(currentScore);
+        localStorage.setItem("highScore", currentScore.toString());
+      }
+    }
+  }, [gameOver, highScore]);
 
   const handleFlap = () => {
     if (gameStateRef.current.isPreStart) {
@@ -117,18 +129,14 @@ const Game: React.FC = () => {
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div onClick={handleFlap}>
       <canvas ref={canvasRef} width={800} height={600} />
-      {gameStateRef.current.isGameOver && (
-        <div>
-          <button onClick={resetGame}>Retry</button>
-        </div>
-      )}
-      {!gameStateRef.current.isGameOver && (
+      {gameOver && <GameOverModal score={gameStateRef.current.score} highScore={highScore} onPlayAgain={resetGame} />}
+      {/* {!gameOver && (
         <div>
           <button onClick={() => gameStateRef.current.togglePaused()}>
             {gameStateRef.current.isPaused ? "Resume" : "Pause"}
           </button>
         </div>
-      )}
+      )} */}
       <div>
         <button
           className="char"
