@@ -7,6 +7,7 @@ import GameState from "./components/GameState";
 import Score from "./components/Score";
 import PreStartInstructions from "./components/PreStartInstructions";
 import { useBackgroundMusic } from "./hooks/useBackgroundMusic";
+import { useEvent } from "./hooks/useEvent";
 
 const Game: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -85,6 +86,16 @@ const Game: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameOver]);
 
+  const resetGame = () => {
+    gameStateRef.current.reset();
+    backgroundRef.current.reset();
+    obstacleFactoryRef.current.reset();
+    beeRef.current.reset();
+    scoreRef.current.reset();
+    instructionsRef.current.reset();
+    setGameOver(false);
+  };
+
   const handleFlap = () => {
     if (gameStateRef.current.isPreStart) {
       gameStateRef.current.startGame();
@@ -93,40 +104,14 @@ const Game: React.FC = () => {
     }
   };
 
-  const resetGame = () => {
-    setGameOver(false);
-    gameStateRef.current.reset();
-    backgroundRef.current.reset();
-    obstacleFactoryRef.current.reset();
-    beeRef.current.reset();
-    scoreRef.current.reset();
-    instructionsRef.current.reset();
-  };
-
-  useEffect(() => {
-    const handleKeydown = (e: KeyboardEvent) => {
-      if (e.code === "Space" || e.code === "Tab") {
-        handleFlap();
-        e.preventDefault(); // Prevent default tab behavior
-      }
-    };
-    window.addEventListener("keydown", handleKeydown);
-    return () => {
-      window.removeEventListener("keydown", handleKeydown);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const handleTouch = () => {
+  useEvent("keydown", (e: KeyboardEvent) => {
+    if (e.code === "Space") {
       handleFlap();
-    };
-    window.addEventListener("touchstart", handleTouch);
-    return () => {
-      window.removeEventListener("touchstart", handleTouch);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      e.preventDefault(); // Prevent default tab behavior
+    }
+  });
+
+  useEvent("touchstart", handleFlap);
 
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
@@ -146,11 +131,12 @@ const Game: React.FC = () => {
       )}
       <div>
         <button
+          className="char"
           onClick={() => {
             setIsPlaying(!isPlaying);
           }}
         >
-          {isPlaying ? "Stop Music" : "Play Music"}
+          {isPlaying ? String.fromCodePoint(0x1f507) : String.fromCodePoint(0x1f508)}
         </button>
       </div>
     </div>
