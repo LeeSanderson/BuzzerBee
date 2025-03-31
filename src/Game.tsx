@@ -63,6 +63,14 @@ const Game: React.FC = () => {
     scoreRef.current.draw(context);
   };
 
+  const renderGameOver = (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    backgroundRef.current.draw(context);
+    obstacleFactoryRef.current.draw(context);
+    beeRef.current.draw(context);
+    scoreRef.current.draw(context);
+  };
+
   const render = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -73,6 +81,8 @@ const Game: React.FC = () => {
       renderPreStart(context, canvas);
     } else if (gameStateRef.current.isAlive) {
       renderActiveGame(context, canvas);
+    } else {
+      renderGameOver(context, canvas);
     }
 
     animationFrameIdRef.current = requestAnimationFrame(render);
@@ -144,7 +154,7 @@ const Game: React.FC = () => {
             setIsPlaying(!isPlaying);
           }}
         >
-          {isPlaying ? String.fromCodePoint(0x1f507) : String.fromCodePoint(0x1f508)}
+          {isPlaying ? "🔇" : "🔈"}
         </button>
       </div>
     </div>
