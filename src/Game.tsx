@@ -9,6 +9,7 @@ import PreStartInstructions from "./components/PreStartInstructions";
 import { useBackgroundMusic } from "./hooks/useBackgroundMusic";
 import { useEvent } from "./hooks/useEvent";
 import GameOverModal from "./components/GameOverModal";
+import PauseButton from "./components/PauseButton";
 
 const Game: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -140,14 +141,8 @@ const Game: React.FC = () => {
     <div onClick={handleFlap}>
       <canvas ref={canvasRef} width={800} height={600} />
       {gameOver && <GameOverModal score={gameStateRef.current.score} highScore={highScore} onPlayAgain={resetGame} />}
-      {/* {!gameOver && (
-        <div>
-          <button onClick={() => gameStateRef.current.togglePaused()}>
-            {gameStateRef.current.isPaused ? "Resume" : "Pause"}
-          </button>
-        </div>
-      )} */}
       <div>
+        <PauseButton gameOver={gameOver} gameState={gameStateRef} />
         <button
           className="char"
           onClick={() => {
