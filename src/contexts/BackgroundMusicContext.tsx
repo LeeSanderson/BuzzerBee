@@ -14,7 +14,7 @@ export const BackgroundMusicProvider: React.FC<{ children: React.ReactNode }> = 
     return storedValue !== null ? JSON.parse(storedValue) : true;
   });
   const [volume] = useState(0.3);
-  const audioRef = useRef(new Audio("/audio/background-track.mp3"));
+  const audioRef = useRef(new Audio("./audio/background-track.mp3"));
 
   useEffect(() => {
     const audio = audioRef.current;
