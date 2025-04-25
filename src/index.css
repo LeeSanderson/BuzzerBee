@@ -32,8 +32,6 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -66,6 +64,24 @@ button:focus-visible {
   padding: 0.2em 0.4em;
   font-family: "Times","Times New Roman","serif","sans-serif",system-ui,-apple-system,BlinkMacSystemFont,"Avenir Next","Avenir","Segoe UI","Lucida Grande","Helvetica Neue","Helvetica","Fira Sans","Roboto","Noto","Droid Sans","Cantarell","Oxygen","Ubuntu","Franklin Gothic Medium","Century Gothic","Liberation Sans",sans-serif,"EmojiSymbols"
 }
+
+.App-header {
+  text-align: left;
+}
+
+.home {
+  font-size: 3.5em;
+  color: #fff;
+  padding: 0.2em 0.4em;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: "Times","Times New Roman","serif","sans-serif",system-ui,-apple-system,BlinkMacSystemFont,"Avenir Next","Avenir","Segoe UI","Lucida Grande","Helvetica Neue","Helvetica","Fira Sans","Roboto","Noto","Droid Sans","Cantarell","Oxygen","Ubuntu","Franklin Gothic Medium","Century Gothic","Liberation Sans",sans-serif,"EmojiSymbols"
+}
+
+.home:hover {
+  color: #fff;
+}
+
 
 canvas {
   border-radius: 15px;

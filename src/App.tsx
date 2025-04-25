@@ -7,7 +7,11 @@ const App: React.FC = () => {
   return (
     <BackgroundMusicProvider>
       <div className="App">
-        <header className="App-header"></header>
+        <header className="App-header">
+          <a href="/" className="home" aria-label="Home" title="Back to SixSidedDice.com">
+            ⚄
+          </a>
+        </header>
         <Game />
       </div>
     </BackgroundMusicProvider>
