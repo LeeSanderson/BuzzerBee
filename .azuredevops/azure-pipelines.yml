@@ -41,7 +41,7 @@ steps:
   condition: succeeded()
   inputs:
     targetType: inline
-    workingDirectory: '$(Pipeline.Workspace)/Tools'
+    workingDirectory: '$(Pipeline.Workspace)'
     script: |
       write-host "current directory = $(get-location)"
       $outputPath = "$(System.DefaultWorkingDirectory)\SiteSource\Games\BuzzerBee"
