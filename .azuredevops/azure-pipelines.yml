@@ -44,13 +44,17 @@ steps:
     workingDirectory: '$(Pipeline.Workspace)/Tools'
     script: |
       write-host "current directory = $(get-location)"
-      $outputPath = "$(System.DefaultWorkingDirectory)/SiteSource/Games/BuzzerBee"
+      $outputPath = "$(System.DefaultWorkingDirectory)\SiteSource\Games\BuzzerBee"
+      write-host "output path = $outputPath"
       if (Test-Path $outputPath) {
+        write-host "removing previous files in $outputPath"
         Remove-Item -Path $outputPath -Recurse -Force
       }
-      mkdir $outputPath
+      New-Item -ItemType Directory -Path $outputPath -Force
 
-      Copy-Item -Path "$(Build.SourcesDirectory)/dist" -Destination $outputPath -Recurse -Force
+      $buildPath = "$(Build.SourcesDirectory)\dist"
+      write-host "copying files from $buildPath to $outputPath"
+      Copy-Item -Path $buildPath -Destination $outputPath -Recurse -Force
 
 - task: PowerShell@2 
   displayName: Update GitHub pages repository
