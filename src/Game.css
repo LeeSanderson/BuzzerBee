@@ -1,0 +1,33 @@
+/* Game component styles */
+.game-container {
+  position: relative;
+  display: inline-block;
+}
+
+.toolbar {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.toolbar button {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.toolbar button:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.toolbar button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

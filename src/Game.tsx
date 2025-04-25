@@ -10,6 +10,7 @@ import { useEvent } from "./hooks/useEvent";
 import GameOverModal from "./components/GameOverModal";
 import PauseButton from "./components/PauseButton";
 import MuteButton from "./components/MuteButton";
+import "./Game.css";
 
 const Game: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -134,16 +135,17 @@ const Game: React.FC = () => {
   });
 
   useEvent("touchstart", handleFlap);
-
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div onClick={handleFlap}>
-      <canvas ref={canvasRef} width={800} height={600} />
-      {gameOver && <GameOverModal score={gameStateRef.current.score} highScore={highScore} onPlayAgain={resetGame} />}
-      <div>
-        <PauseButton gameOver={gameOver} gameState={gameStateRef} />
-        <MuteButton />
+      <div className="game-container">
+        <canvas ref={canvasRef} width={800} height={600} />
+        <div className="toolbar">
+          <PauseButton gameOver={gameOver} gameState={gameStateRef} />
+          <MuteButton />
+        </div>
       </div>
+      {gameOver && <GameOverModal score={gameStateRef.current.score} highScore={highScore} onPlayAgain={resetGame} />}
     </div>
   );
 };
