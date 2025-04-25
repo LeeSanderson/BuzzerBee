@@ -9,7 +9,8 @@ const App: React.FC = () => {
       <div className="App">
         <header className="App-header">
           <a href="/" className="home" aria-label="Home" title="Back to SixSidedDice.com">
-            ⚄
+            <i className="fas fa-dice-five"></i>
+            <span className="sr-only">Home</span>
           </a>
         </header>
         <Game />

@@ -6,10 +6,10 @@ import ObstacleFactory from "./components/ObstacleFactory";
 import GameState from "./components/GameState";
 import Score from "./components/Score";
 import PreStartInstructions from "./components/PreStartInstructions";
-import { useBackgroundMusic } from "./hooks/useBackgroundMusic";
 import { useEvent } from "./hooks/useEvent";
 import GameOverModal from "./components/GameOverModal";
 import PauseButton from "./components/PauseButton";
+import MuteButton from "./components/MuteButton";
 
 const Game: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -21,7 +21,6 @@ const Game: React.FC = () => {
   const scoreRef = useRef<Score>(new Score(gameStateRef.current));
   const animationFrameIdRef = useRef<number | null>(null);
   const instructionsRef = useRef<PreStartInstructions>(new PreStartInstructions());
-  const { isPlaying, setIsPlaying } = useBackgroundMusic();
   const [highScore, setHighScore] = useState<number>(parseInt(localStorage.getItem("highScore") || "0", 10));
 
   const renderPreStart = (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
@@ -143,14 +142,7 @@ const Game: React.FC = () => {
       {gameOver && <GameOverModal score={gameStateRef.current.score} highScore={highScore} onPlayAgain={resetGame} />}
       <div>
         <PauseButton gameOver={gameOver} gameState={gameStateRef} />
-        <button
-          className="char"
-          onClick={() => {
-            setIsPlaying(!isPlaying);
-          }}
-        >
-          {isPlaying ? "🔇" : "🔈"}
-        </button>
+        <MuteButton />
       </div>
     </div>
   );

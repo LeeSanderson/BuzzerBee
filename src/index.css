@@ -13,14 +13,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-@font-face{
-  font-family:"EmojiSymbols";
-  src:url(/EmojiSymbols-Regular.woff) 
-  format("woff");
-  text-decoration:none;
-  font-style:normal
-}
-
 a {
   font-weight: 500;
   color: #646cff;
@@ -59,11 +51,6 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
-.char {
-  font-size: 1.5em;
-  padding: 0.2em 0.4em;
-  font-family: "Times","Times New Roman","serif","sans-serif",system-ui,-apple-system,BlinkMacSystemFont,"Avenir Next","Avenir","Segoe UI","Lucida Grande","Helvetica Neue","Helvetica","Fira Sans","Roboto","Noto","Droid Sans","Cantarell","Oxygen","Ubuntu","Franklin Gothic Medium","Century Gothic","Liberation Sans",sans-serif,"EmojiSymbols"
-}
 
 .App-header {
   text-align: left;
@@ -82,6 +69,16 @@ button:focus-visible {
   color: #fff;
 }
 
+.sr-only {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
 
 canvas {
   border-radius: 15px;
