@@ -52,7 +52,7 @@ steps:
       }
       New-Item -ItemType Directory -Path $outputPath -Force
 
-      $buildPath = "$(Build.SourcesDirectory)\dist"
+      $buildPath = "$(Build.SourcesDirectory)\dist\*"
       write-host "copying files from $buildPath to $outputPath"
       Copy-Item -Path $buildPath -Destination $outputPath -Recurse -Force
 
