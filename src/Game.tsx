@@ -135,11 +135,35 @@ const Game: React.FC = () => {
   });
 
   useEvent("touchstart", handleFlap);
+  useEffect(() => {
+    const resizeCanvas = () => {
+      const aspectRatio = 4 / 3;
+      const margin = 46; // px
+      const maxWidth = window.innerWidth - margin * 2;
+      const maxHeight = window.innerHeight - margin * 2;
+      let width = maxWidth;
+      let height = maxWidth / aspectRatio;
+      if (height > maxHeight) {
+        height = maxHeight;
+        width = maxHeight * aspectRatio;
+      }
+      const canvas = canvasRef.current;
+      if (canvas) {
+        canvas.width = Math.floor(width);
+        canvas.height = Math.floor(height);
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+      }
+    };
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+    return () => window.removeEventListener("resize", resizeCanvas);
+  }, []);
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div onClick={handleFlap}>
       <div className="game-container">
-        <canvas ref={canvasRef} width={800} height={600} />
+        <canvas ref={canvasRef} />
         <div className="toolbar">
           <PauseButton gameOver={gameOver} gameState={gameStateRef} />
           <MuteButton />
